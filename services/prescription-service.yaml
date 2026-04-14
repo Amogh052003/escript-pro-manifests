@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: prescription-service
+  namespace: escriptpro
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: prescription-service
+  template:
+    metadata:
+      labels:
+        app: prescription-service
+    spec:
+      initContainers:
+      - name: wait-for-postgres
+        image: busybox
+        command:
+          - sh
+          - -c
+          - |
+            echo "Waiting for DNS...";
+            until nslookup postgres; do sleep 2; done;
+            echo "Waiting for Postgres...";
+            until nc -z postgres 5432; do sleep 2; done;
+
+      containers:
+      - name: prescription-service
+        image: amoghlokhande/escriptpro-prescription-service
+        ports:
+        - containerPort: 8083
+        env:
+        - name: SPRING_PROFILES_ACTIVE
+          value: "docker"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: prescription-service
+  namespace: escriptpro
+spec:
+  selector:
+    app: prescription-service
+  ports:
+    - port: 8083
+      targetPort: 8083
