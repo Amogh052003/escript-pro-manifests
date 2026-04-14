@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: medicine-service
+  namespace: escriptpro
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: medicine-service
+  template:
+    metadata:
+      labels:
+        app: medicine-service
+    spec:
+      containers:
+      - name: medicine-service
+        image: amoghlokhande/escriptpro-medicine-service
+        ports:
+        - containerPort: 8084
+        env:
+        - name: SPRING_PROFILES_ACTIVE
+          value: "docker"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: medicine-service
+  namespace: escriptpro
+spec:
+  selector:
+    app: medicine-service
+  ports:
+    - port: 8084
+      targetPort: 8084

@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: receptionist-service
+  namespace: escriptpro
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: receptionist-service
+  template:
+    metadata:
+      labels:
+        app: receptionist-service
+    spec:
+      containers:
+      - name: receptionist-service
+        image: amoghlokhande/escriptpro-receptionist-service
+        ports:
+        - containerPort: 8087
+        env:
+        - name: SPRING_PROFILES_ACTIVE
+          value: "docker"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: receptionist-service
+  namespace: escriptpro
+spec:
+  selector:
+    app: receptionist-service
+  ports:
+    - port: 8087
+      targetPort: 8087
