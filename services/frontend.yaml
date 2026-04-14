@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
       - name: frontend
-        image: amoghlokhande/escriptpro-frontend:fixed
+        image: amoghlokhande/escriptpro-frontend:v2
         ports:
         - containerPort: 80
 
