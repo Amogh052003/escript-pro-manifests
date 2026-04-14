@@ -13,6 +13,15 @@ spec:
       labels:
         app: doctor-service
     spec:
+      initContainers:
+      - name: wait-for-postgres
+        image: busybox
+        command:
+          - sh
+          - -c
+          - |
+            until nc -z postgres 5432; do sleep 2; done;
+
       containers:
       - name: doctor-service
         image: amoghlokhande/escriptpro-doctor-service
@@ -32,3 +41,4 @@ spec:
     app: doctor-service
   ports:
     - port: 8086
+      targetPort: 8086

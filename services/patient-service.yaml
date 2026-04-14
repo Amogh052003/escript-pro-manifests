@@ -1,23 +1,32 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: patient-service
+  name: receptionist-service
   namespace: escriptpro
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: patient-service
+      app: receptionist-service
   template:
     metadata:
       labels:
-        app: patient-service
+        app: receptionist-service
     spec:
+      initContainers:
+      - name: wait-for-postgres
+        image: busybox
+        command:
+          - sh
+          - -c
+          - |
+            until nc -z postgres 5432; do sleep 2; done;
+
       containers:
-      - name: patient-service
-        image: amoghlokhande/escriptpro-patient-service
+      - name: receptionist-service
+        image: amoghlokhande/escriptpro-receptionist-service
         ports:
-        - containerPort: 8082
+        - containerPort: 8087
         env:
         - name: SPRING_PROFILES_ACTIVE
           value: "docker"
@@ -25,11 +34,11 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: patient-service
+  name: receptionist-service
   namespace: escriptpro
 spec:
   selector:
-    app: patient-service
+    app: receptionist-service
   ports:
-    - port: 8082
-      targetPort: 8082
+    - port: 8087
+      targetPort: 8087

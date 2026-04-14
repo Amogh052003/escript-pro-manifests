@@ -17,7 +17,7 @@ spec:
       - name: api-gateway
         image: amoghlokhande/escriptpro-api-gateway
         ports:
-        - containerPort: 8080   # IMPORTANT: Spring runs on 8080
+        - containerPort: 8080
         env:
         - name: SPRING_PROFILES_ACTIVE
           value: "docker"

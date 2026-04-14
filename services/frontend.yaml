@@ -1,52 +1,44 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: frontend
+  name: patient-service
   namespace: escriptpro
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: frontend
+      app: patient-service
   template:
     metadata:
       labels:
-        app: frontend
+        app: patient-service
     spec:
+      initContainers:
+      - name: wait-for-postgres
+        image: busybox
+        command:
+          - sh
+          - -c
+          - |
+            until nc -z postgres 5432; do sleep 2; done;
+
       containers:
-      - name: frontend
-        image: amoghlokhande/escriptpro-frontend:fixed
+      - name: patient-service
+        image: amoghlokhande/escriptpro-patient-service
         ports:
-        - containerPort: 80
-
-        # 👇 ensures latest image is always pulled (important for updates)
-        imagePullPolicy: Always
-
-        # 👇 basic health check (optional but recommended)
-        readinessProbe:
-          httpGet:
-            path: /
-            port: 80
-          initialDelaySeconds: 5
-          periodSeconds: 10
-
-        livenessProbe:
-          httpGet:
-            path: /
-            port: 80
-          initialDelaySeconds: 10
-          periodSeconds: 20
-
+        - containerPort: 8082
+        env:
+        - name: SPRING_PROFILES_ACTIVE
+          value: "docker"
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: frontend
+  name: patient-service
   namespace: escriptpro
 spec:
-  type: ClusterIP
   selector:
-    app: frontend
+    app: patient-service
   ports:
-    - port: 80
-      targetPort: 80
+    - port: 8082
+      targetPort: 8082

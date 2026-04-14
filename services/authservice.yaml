@@ -13,6 +13,15 @@ spec:
       labels:
         app: authservice
     spec:
+      initContainers:
+      - name: wait-for-postgres
+        image: busybox
+        command:
+          - sh
+          - -c
+          - |
+            until nc -z postgres 5432; do sleep 2; done;
+
       containers:
       - name: authservice
         image: amoghlokhande/escriptpro-authservice
@@ -32,3 +41,4 @@ spec:
     app: authservice
   ports:
     - port: 8080
+      targetPort: 8080

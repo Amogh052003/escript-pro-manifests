@@ -13,6 +13,15 @@ spec:
       labels:
         app: medicine-service
     spec:
+      initContainers:
+      - name: wait-for-postgres
+        image: busybox
+        command:
+          - sh
+          - -c
+          - |
+            until nc -z postgres 5432; do sleep 2; done;
+
       containers:
       - name: medicine-service
         image: amoghlokhande/escriptpro-medicine-service
