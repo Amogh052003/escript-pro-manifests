@@ -15,15 +15,16 @@ spec:
     spec:
       initContainers:
       - name: wait-for-postgres
-        image: busybox
+        image: alpine:3.19
         command:
           - sh
           - -c
           - |
-            echo "Waiting for DNS...";
-            until nslookup postgres; do sleep 2; done;
+            apk add --no-cache netcat-openbsd
             echo "Waiting for Postgres...";
-            until nc -z postgres 5432; do sleep 2; done;
+            until nc -z postgres 5432; do
+              sleep 2;
+            done;
 
       containers:
       - name: prescription-service
