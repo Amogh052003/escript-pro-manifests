@@ -26,12 +26,14 @@ spec:
 
       containers:
       - name: patient-service
-        image: amoghlokhande/escriptpro-patient-service
+        image: amoghlokhande/patient-service
+        imagePullPolicy: Always
         ports:
         - containerPort: 8082
         env:
         - name: SPRING_PROFILES_ACTIVE
           value: "docker"
+
 ---
 apiVersion: v1
 kind: Service

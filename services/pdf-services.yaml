@@ -15,14 +15,13 @@ spec:
     spec:
       containers:
       - name: pdf-service
-        image: amoghlokhande/escriptpro-pdf-service
+        image: amoghlokhande/pdf-service
+        imagePullPolicy: Always
         ports:
         - containerPort: 8085
-
         env:
         - name: SPRING_PROFILES_ACTIVE
           value: "docker"
-
         envFrom:
         - secretRef:
             name: s3-config

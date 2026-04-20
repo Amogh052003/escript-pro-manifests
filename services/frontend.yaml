@@ -15,7 +15,8 @@ spec:
     spec:
       containers:
       - name: frontend
-        image: amoghlokhande/escriptpro-frontend:v2
+        image: amoghlokhande/escriptpro-frontend
+        imagePullPolicy: Always
         ports:
         - containerPort: 80
 
