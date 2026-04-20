@@ -31,9 +31,16 @@ spec:
         image: amoghlokhande/escriptpro-prescription-service
         ports:
         - containerPort: 8083
+
         env:
         - name: SPRING_PROFILES_ACTIVE
           value: "docker"
+
+  
+        envFrom:
+        - secretRef:
+            name: s3-config
+
 ---
 apiVersion: v1
 kind: Service
